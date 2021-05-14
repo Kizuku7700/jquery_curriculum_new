@@ -91,16 +91,15 @@
 
       $(function() {
         var page = 1;
-        $('.search__btn').on('click',function() {
+        $(document).on('click', '.search__btn', function() {
           $("ul").empty();
-          var keyword = $('.search__text__input').val();
+          //var page = 1;
+          //var keyword = $('.search__text__input').val();
           searchBooks();
-          if (keyword === "") {
-            $('.message').html('<p class="message">検索文字が入力されていません。</p>');
-          }
         });
         // 「前へ」を押した時の処理
-        $('[data-js="page-prev"]').on('click', function() {
+        $(document).on('click', '[data-js="page-prev"]', function(e) {
+          $('ul').empty();
           e.preventDefault();
           if (page === 1) {
             return false;
@@ -109,14 +108,18 @@
           searchBooks();
         });
         // 「次へ」を押した時の処理
-        $('[data-js="page-next"]').on('click', function() {
+        $(document).on('click', '[data-js="page-next"]', function(e) {
+          $('ul').empty();
           e.preventDefault();
           page ++;
           searchBooks();
         });
-
+        //  イベント処理
         function searchBooks() {
           var keyword = $('.search__text__input').val();
+          if (keyword === "") {
+            $('.message').html('<p class="message">検索文字が入力されていません。</p>');
+          }
           $.ajax( {
             url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
             type: 'GET',
@@ -130,27 +133,29 @@
             }
           }).done(function(data) {
             // データ取得成功後の処理
-            if (data.count === 0) {
+            if (data.count > 0) {
+            // 件数が０以上の場合
+              $(".message, .pager").remove();
+              $.each (data.Items, function(i, item) {
+                var list = $(
+                  "<li class='lists__item'>" +
+                    "<div class='lists__item__inner'>" +
+                      "<a href='" + item.Item.itemUrl + "'class='lists__item__link' target='_blank'>" +
+                      "<img src='" + item.Item.mediumImageUrl + "' class='lists__item__img' alt>" +
+                      "<p class='lists__item__detail'>作品名：　" + item.Item.title + '</p>' +
+                      "<p class='lists__item__detail'>作者　：　" + item.Item.author + '</p>' +
+                      "<p class='lists__item__detail'>出版社：　" + item.Item.publisherName + '</p>' + '</a>' +
+                    '</div>' +
+                  '</li>'
+                );
+                $('.lists').prepend(list);
+              })} else {
+              // 件数が０の場合
               $('.message').html(
                 '<p class="error-message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>'
               );
+              $('.pager').remove();
             }
-            // 件数が０以上の場合
-            $(".message, .pager").remove();
-            $.each (data.Items, function(i, item) {
-              var list = $(
-                "<li class='lists__item'>" +
-                  "<div class='lists__item__inner'>" +
-                    "<a href='" + item.Item.itemUrl + "'class='lists__item__link' target='_blank'>" +
-                    "<img src='" + item.Item.mediumImageUrl + "' class='lists__item__img' alt>" +
-                    "<p class='lists__item__detail'>作品名：　" + item.Item.title + '</p>' +
-                    "<p class='lists__item__detail'>作者　：　" + item.Item.author + '</p>' +
-                    "<p class='lists__item__detail'>出版社：　" + item.Item.publisherName + '</p>' + '</a>' +
-                  '</div>' +
-                '</li>'
-              );
-              $('.lists').prepend(list);
-            });
             // ページャーの設定
             var pager = $(
               '<div class="pager" data-js="pager">' +
@@ -174,9 +179,13 @@
             } else if (data.page === data.pageCount) {
               $('[data-js="page-next"]').addClass('disabled');
             }
+            $('.btn-item').on('click', function(e) {
+              e.preventDefault();
+            }, { passive: false }
+            );
           }).fail(function() {
             // 通信失敗の処理
-            alert("失敗！")
+
           });
         }
       });
