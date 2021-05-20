@@ -99,18 +99,21 @@
         });
         // 「前へ」を押した時の処理
         $(document).on('click', '[data-js="page-prev"]', function(e) {
-          $('ul').empty();
           e.preventDefault();
-          if (page === 1) {
+          if (data.page === 1) {
             return false;
           }
+          $('ul').empty();
           page --;
           searchBooks();
-        });
+        })
         // 「次へ」を押した時の処理
         $(document).on('click', '[data-js="page-next"]', function(e) {
-          $('ul').empty();
           e.preventDefault();
+          if (data.page === data.pageCount) {
+            return false;
+          }
+          $('ul').empty();
           page ++;
           searchBooks();
         });
@@ -151,18 +154,27 @@
               // ページャーの設定
               var pager = $(
                 '<div class="pager" data-js="pager">' +
-                '<div class="counter">' +
-                '<span class="counter-current"></span>' + '/' + '<span class="counter-all"></span>' +
-                '</div>' +
-                '<div class="btn-wrapper">' +
-                '<a class="btn-item" data-js="page-prev" href="">前へ</a>' +
-                '<a class="btn-item" data-js="page-next" href="">次へ</a>' +
-                '</div>' +
+                  '<div class="counter">' +
+                    '<span class="counter-current"></span>' + '/' + '<span class="counter-all"></span>' +
+                  '</div>' +
+                  '<div class="btn-wrapper">' +
+                    '<a class="btn-item" data-js="page-prev" href="">前へ</a>' +
+                    '<a class="btn-item" data-js="page-next" href="">次へ</a>' +
+                  '</div>' +
                 '</div>'
               );
               $('.lists').after(pager);
               $('.counter-current').prepend(data.page);
               $('.counter-all').prepend(data.pageCount);
+
+              // 非活性の処理
+              if (data.pageCount === 1) {
+                $('.btn-item').addClass('disabled');
+              } else if (data.page === 1) {
+                $('[data-js="page-prev"]').addClass('disabled');
+              } else if (data.page === data.pageCount) {
+                $('[data-js="page-next"]').addClass('disabled');
+              }
             } else {
             // 件数が０の場合
               $('.pager').remove();
@@ -170,18 +182,6 @@
                 '<p class="error-message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>'
               );
             }
-            // 非活性の処理
-            if (data.pageCount === 1) {
-              $('.btn-item').addClass('disabled');
-            } else if (data.page === 1) {
-              $('[data-js="page-prev"]').addClass('disabled');
-            } else if (data.page === data.pageCount) {
-              $('[data-js="page-next"]').addClass('disabled');
-            }
-            $('.btn-item').on('click', function(e) {
-              e.preventDefault();
-            }, { passive: false }
-            );
           }).fail(function(error) {
             // 通信失敗の処理
             $('.pager').remove();
