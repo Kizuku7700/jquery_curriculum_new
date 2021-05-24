@@ -93,30 +93,31 @@
         var page = 1;
         // 「検索ボタン」を押した時の処理
         $(document).on('click', '.search__btn', function() {
-          $("ul").empty();
+          $('ul').empty();
           page = 1;
           searchBooks();
         });
         // 「前へ」を押した時の処理
         $(document).on('click', '[data-js="page-prev"]', function(e) {
           e.preventDefault();
-          if (data.page === 1) {
+          if (page === 1) {
             return false;
           }
           $('ul').empty();
           page --;
           searchBooks();
-        })
+        });
         // 「次へ」を押した時の処理
         $(document).on('click', '[data-js="page-next"]', function(e) {
           e.preventDefault();
-          if (data.page === data.pageCount) {
+          if ($('[data-js="page-next"]').hasClass('disabled')) {
             return false;
           }
           $('ul').empty();
           page ++;
           searchBooks();
         });
+
         //  イベント処理
         function searchBooks() {
           var keyword = $('.search__text__input').val();
@@ -166,7 +167,6 @@
               $('.lists').after(pager);
               $('.counter-current').prepend(data.page);
               $('.counter-all').prepend(data.pageCount);
-
               // 非活性の処理
               if (data.pageCount === 1) {
                 $('.btn-item').addClass('disabled');
@@ -176,7 +176,7 @@
                 $('[data-js="page-next"]').addClass('disabled');
               }
             } else {
-            // 件数が０の場合
+              // 件数が０の場合
               $('.pager').remove();
               $('.message').html(
                 '<p class="error-message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>'
