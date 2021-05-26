@@ -95,12 +95,13 @@
         $(document).on('click', '.search__btn', function() {
           $('ul').empty();
           page = 1;
+          var keyword = $('.search__text__input').val();
           searchBooks();
         });
         // 「前へ」を押した時の処理
         $(document).on('click', '[data-js="page-prev"]', function(e) {
           e.preventDefault();
-          if (page === 1) {
+          if ($('[data-js="page-prev"]').hasClass('disabled')) {
             return false;
           }
           $('ul').empty();
