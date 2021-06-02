@@ -159,21 +159,22 @@
         }
 
         function showList(books) { // 検索結果が0以上の時
+          var list = "";
           $.each (books.Items, function(i, book) {
-            var list = $(
-              "<li class='lists__item'>" +
-                "<div class='lists__item__inner'>" +
-                  "<a href='" + book.Item.itemUrl + "'class='lists__item__link' target='_blank'>" +
-                    "<img src='" + book.Item.mediumImageUrl + "' class='lists__item__img' alt>" +
-                    "<p class='lists__item__detail'>作品名：　" + book.Item.title + '</p>' +
-                    "<p class='lists__item__detail'>作者　：　" + book.Item.author + '</p>' +
-                    "<p class='lists__item__detail'>出版社：　" + book.Item.publisherName + '</p>' +
+            list += $(
+              '<li class="lists__item">' +
+                '<div class="lists__item__inner">' +
+                  '<a href="" + book.Item.itemUrl + "" class="lists__item__link" target="_blank">' +
+                    '<img src="" + book.Item.mediumImageUrl + "" class="lists__item__img" alt>' +
+                    '<p class="lists__item__detail">作品名：　' + book.Item.title + '</p>' +
+                    '<p class="lists__item__detail">作者　：　' + book.Item.author + '</p>' +
+                    '<p class="lists__item__detail">出版社：　' + book.Item.publisherName + '</p>' +
                   '</a>' +
                 '</div>' +
               '</li>'
             );
-            $('.lists').prepend(list);
           })
+          $('.lists').prepend(list);
         }
 
         function showPager(data) { // pagerの表示
@@ -199,18 +200,20 @@
         }
 
         function connectionFail(error) { // 通信失敗の時
-          $('[data-js="pager"]').remove();
           var status = error.status;
           var message = '';
           switch (status) {
+            case 0:
+            message = '通信に失敗しました。インターネットの接続をご確認ください。';
+            break;
             case 400:
               message = '検索文字が入力されていません。';
               break;
             case 429:
               message = 'リクエスト過多です。しばらく時間を置いてからお試しください。';
               break;
-            case 0:
-              message = '通信に失敗しました。インターネットの接続をご確認ください。';
+            default:
+              message = '原因不明のエラーです。管理者に問い合わせてください。';
               break;
           }
           showErrorMessage(message);
