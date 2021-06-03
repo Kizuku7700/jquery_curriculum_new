@@ -161,18 +161,17 @@
         function showList(books) { // 検索結果が0以上の時
           var list = "";
           $.each (books.Items, function(i, book) {
-            list += $(
+            list +=
               '<li class="lists__item">' +
                 '<div class="lists__item__inner">' +
-                  '<a href="" + book.Item.itemUrl + "" class="lists__item__link" target="_blank">' +
-                    '<img src="" + book.Item.mediumImageUrl + "" class="lists__item__img" alt>' +
+                  '<a href=' + book.Item.itemUrl + ' class="lists__item__link" target="_blank">' +
+                    '<img src=' + book.Item.mediumImageUrl + ' class="lists__item__img" alt>' +
                     '<p class="lists__item__detail">作品名：　' + book.Item.title + '</p>' +
                     '<p class="lists__item__detail">作者　：　' + book.Item.author + '</p>' +
                     '<p class="lists__item__detail">出版社：　' + book.Item.publisherName + '</p>' +
                   '</a>' +
                 '</div>' +
               '</li>'
-            );
           })
           $('.lists').prepend(list);
         }
