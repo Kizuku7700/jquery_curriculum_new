@@ -93,10 +93,10 @@
         var page = 1;
         var keyword = '';
         // 「検索ボタン」を押した時の処理
-        $(document).on('click', '.search__btn', function() {
+        $(document).on('click', '[data-js="search-btn"]', function() {
           erasingProcess();
           page = 1;
-          keyword = $('.search__text__input').val();
+          keyword = $('[data-js="search-word"]').val();
           searchBooks();
         });
         // 「前へ」を押した時の処理
@@ -190,7 +190,8 @@
           );
           $('.lists').after(pager);
           // 非活性の処理
-          if (data.page === 1) {
+          var firstPage = 1;
+          if (data.page === firstPage) {
             $('[data-js="page-prev"]').addClass('disabled');
           }
           if (data.page === data.pageCount) {
@@ -203,8 +204,8 @@
           var message = '';
           switch (status) {
             case 0:
-            message = '通信に失敗しました。インターネットの接続をご確認ください。';
-            break;
+              message = '通信に失敗しました。インターネットの接続をご確認ください。';
+              break;
             case 400:
               message = '検索文字が入力されていません。';
               break;
